@@ -1,5 +1,4 @@
 pydub
-morse-audio-decoder
 matplotlib
 scipy
 wave

@@ -1,0 +1,72 @@
+[
+    {
+        "start": 0.0,
+        "end": 0.6432,
+        "amplitude": 0.27206658129411476,
+        "length": 0.6432,
+        "type": "silence"
+    },
+    {
+        "start": 0.651,
+        "end": 0.6743,
+        "amplitude": 0.4653,
+        "length": 0.0233,
+        "type": "sound"
+    },
+    {
+        "start": 0.682,
+        "end": 0.744,
+        "amplitude": 0.3301737763630052,
+        "length": 0.062,
+        "type": "silence"
+    },
+    {
+        "start": 0.7518,
+        "end": 0.7827,
+        "amplitude": 0.4581,
+        "length": 0.0309,
+        "type": "sound"
+    },
+    {
+        "start": 0.7905,
+        "end": 0.837,
+        "amplitude": 0.1968,
+        "length": 0.0465,
+        "type": "silence"
+    },
+    {
+        "start": 0.8448,
+        "end": 0.8835,
+        "amplitude": 0.4464,
+        "length": 0.0387,
+        "type": "sound"
+    },
+    {
+        "start": 0.8912,
+        "end": 0.9377,
+        "amplitude": 0.18531187787024825,
+        "length": 0.0465,
+        "type": "silence"
+    },
+    {
+        "start": 0.9455,
+        "end": 1.0773,
+        "amplitude": 0.4453,
+        "length": 0.1318,
+        "type": "sound"
+    },
+    {
+        "start": 1.085,
+        "end": 1.2323,
+        "amplitude": 0.23807063480484852,
+        "length": 0.1473,
+        "type": "silence"
+    },
+    {
+        "start": 1.24,
+        "end": 1.271,
+        "amplitude": 0.4319,
+        "length": 0.031,
+        "type": "sound"
+    }
+]
