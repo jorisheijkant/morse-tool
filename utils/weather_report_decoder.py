@@ -50,11 +50,11 @@ def parse_position(position_string):
     longitude_string = position_string[5:]
     print(f"Latitude string: {latitude_string}, longitude string: {longitude_string}")
     # Get characters 3 and 4, a dot and character 5, to get the latitude
-    latitude = float(latitude_string[2:4] + '.' + latitude_string[4])
+    latitude = latitude_string[2:4] + '.' + latitude_string[4]
     # Get the first character, which is the globe quadrant
     globe_quadrant = longitude_string[0]
     # Get characters 3 and 4, a dot and character 5, to get the longitude
-    longitude = float(longitude_string[2:4] + '.' + longitude_string[4])
+    longitude = longitude_string[2:4] + '.' + longitude_string[4]
 
     return [latitude, longitude]
 
@@ -128,8 +128,8 @@ def decode_report(morse):
     }
 
 # Check with dummy string
-test_string = "VVV RMP RMP RMP D E RMIK RMIK Q S A ? Q TC K RMI K 5 6 0 1 6 10 1 5 0 2 5 6 0 = S ML F O R R C D 8 8 RI O 8 0 = 1 0 1 2 1 E 9 5 5 0 1019 6 4 2 4 9 8 00 7 04 100 T 9 40241 5 7 006 8 0 5 00 2 2 2 6 1 0005 8 20 3 01 10012 = A R RMI A K RMI K O K QR U K"
-print(decode_report(test_string))
+# test_string = "VVV RMP RMP RMP D E RMIK RMIK Q S A ? Q TC K RMI K 5 6 0 1 6 10 1 5 0 2 5 6 0 = S ML F O R R C D 8 8 RI O 8 0 = 1 0 1 2 1 E 9 5 5 0 1019 6 4 2 4 9 8 00 7 04 100 T 9 40241 5 7 006 8 0 5 00 2 2 2 6 1 0005 8 20 3 01 10012 = A R RMI A K RMI K O K QR U K"
+# print(decode_report(test_string))
 
 # Q codes that are used in weather reports
 ###

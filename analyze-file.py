@@ -10,7 +10,7 @@ from utils.morse_from_sound_profile import morse_from_sound_profile
 from utils.decode_morse import decode_morse
 from utils.weather_report_decoder import decode_report
 
-audio_file = 'files/test/test.wav'
+audio_file = 'files/test/test-2/test-2.wav'
 file_no_ext_with_folder = audio_file.split('.')[0]
 file_no_ext = file_no_ext_with_folder.split('/')[-1]
 print(f"Now analyzing {file_no_ext}...")
@@ -43,14 +43,12 @@ frequency_information = frequency_analysis(signal, sampling_freq, file_no_ext_wi
 print(frequency_information)
 range_to_use = frequency_information['freq_range']
 
-# Cut out only the part of the signal that is in the frequency range, using a scipy butterworth filter (bp)
+# Cut out only the part of the signal that is in the frequency range, using a scipy butterworth filter (bandpass)
 nyquist_freq = 0.5 * sampling_freq
 normalized_low_freq = range_to_use[0] / nyquist_freq
 normalized_high_freq = range_to_use[1] / nyquist_freq
 sos = butter(10, [normalized_low_freq, normalized_high_freq], 'bandpass', output='sos')
 filtered = sosfilt(sos, signal)
-# filtered = sosfilt(sos, signal)
-
 
 # Store an array of all the samples, with their time and their amplitude
 samples = []
@@ -67,13 +65,23 @@ min_amplitude = min(amplitude_values)
 max_amplitude = max(amplitude_values)
 most_common_amplitude = stats.mode(amplitude_values)
 most_common_amplitude = most_common_amplitude[0]
-treshold = 0.35
 
 print(f"Min amplitude: {min_amplitude}, max amplitude: {max_amplitude}, most common amplitude: {most_common_amplitude}")
 
+# Calculate the noise floor
+amplitude_values = [sample['amplitude'] for sample in samples]
+noise_floor = np.median(amplitude_values)
+std_dev = np.std(amplitude_values)
+
+# Set the threshold to be a multiple of the standard deviation above the median
+threshold_multiplier = 1.75
+threshold = noise_floor + threshold_multiplier * std_dev
+print(f"Noise floor: {noise_floor}, standard deviation: {std_dev}, threshold: {threshold}")
+# threshold = 0.35
+
 # Now use this list of amplitudes to measure when there is a sound and when there is silence
-# A sound is defined as a period of time where the amplitude is above the treshold
-# A silence is defined as a period of time where the amplitude is below the treshold
+# A sound is defined as a period of time where the amplitude is above the threshold
+# A silence is defined as a period of time where the amplitude is below the threshold
 
 # Total samples 
 total_samples = len(samples)
@@ -110,8 +118,8 @@ current_silence = None
 # Make a rather high res plot 
 plt.figure(figsize=(20, 10))
 plt.plot([sample_group['time'] for sample_group in sample_groups[:800]], [sample_group['amplitude'] for sample_group in sample_groups[:800]], color='black')
-# Add the treshold line as a red line
-plt.axhline(y=treshold, color='red', linestyle='-')
+# Add the threshold line as a red line
+plt.axhline(y=threshold, color='red', linestyle='-')
 plt.savefig(f"{file_no_ext_with_folder}-groups.png")
 
 # Loop through all the samples
@@ -119,8 +127,8 @@ for sample in sample_groups:
     signal_here = sample['amplitude']
     time_here = sample['time']
 
-    # If the signal is above the treshold, we are in a sound
-    if signal_here > treshold:
+    # If the signal is above the threshold, we are in a sound
+    if signal_here > threshold:
         # If we were in a silence, we add it to the silences array
         if current_silence is not None:
             silences.append(current_silence)
@@ -138,7 +146,7 @@ for sample in sample_groups:
             current_sound['end'] = time_here
             current_sound['length'] = round(current_sound['end'] - current_sound['start'], 4)
             current_sound['amplitude'] = max(current_sound['amplitude'], signal_here)
-    # If the signal is below the treshold, we are in a silence
+    # If the signal is below the threshold, we are in a silence
     else:
         # If we were in a sound, we add it to the sounds array
         if current_sound is not None:
