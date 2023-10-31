@@ -7,8 +7,9 @@ from scipy import stats
 from scipy.signal import butter, lfilter, sosfilt
 from utils.frequency_analysis import frequency_analysis
 from utils.morse_from_sound_profile import morse_from_sound_profile
+from utils.decode_morse import decode_morse
 
-audio_file = 'files/test/test.wav'
+audio_file = 'files/test/cleaned-morse.wav'
 file_no_ext_with_folder = audio_file.split('.')[0]
 file_no_ext = file_no_ext_with_folder.split('/')[-1]
 print(f"Now analyzing {file_no_ext}...")
@@ -18,6 +19,11 @@ analysis = {}
 
 # Read the audio file
 sampling_freq, signal = wavfile.read(audio_file)
+
+# Check if file is mono, otherwise break
+if len(signal.shape) > 1:
+    print(f"File {file_no_ext} is not mono, exiting... This tool only works with mono files.")
+    sys.exit()
 
 # Normalize the values
 signal = signal / np.power(2, 15)
@@ -31,6 +37,7 @@ minutes = int(round(seconds // 60))
 seconds = int(round(seconds % 60))
 analysis['length (m:s)'] = f"{minutes}:{seconds}"
 
+print(f"Doing frequency analysis wth sampling freq {sampling_freq} and signal length {len_signal}...")
 frequency_information = frequency_analysis(signal, sampling_freq, file_no_ext_with_folder, False)
 print(frequency_information)
 range_to_use = frequency_information['freq_range']
@@ -178,6 +185,11 @@ analysis['max_db'] = f"{max_db} db"
 
 morse_array = morse_from_sound_profile(sounds, silences)
 analysis['morse_array'] = morse_array
+
+print(f"Now decoding morse...")
+print(f"Morse array: {morse_array}")
+text = decode_morse(morse_array)
+analysis['text'] = text
 
 # Write the analysis to a file
 with open(f"{file_no_ext_with_folder}.txt", 'w') as f:

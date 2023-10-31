@@ -25,13 +25,14 @@ def frequency_analysis(signal, sampling_freq, file, plot=False):
     else:
         freq_signal[1:len_fts - 1] *= 2
 
-    # Extract the power in dB
-    signal_power = 10 * np.log10(freq_signal)
+    # Extract the power in dB, watch out for zero division
+    signal_power = 10 * np.log10(freq_signal + 1e-10)
 
     # Check at which frequency maximum power is present
-    raw_max_power = max(signal_power)
-    max_power = int(round(max(signal_power)))
+    raw_max_power = np.max(signal_power)
+    max_power = int(round(np.max(signal_power)))
     max_signal_index = np.where(signal_power == raw_max_power)[0][0]
+
     max_signal_freq = max_signal_index * sampling_freq / len_signal
     freq_range = [int(round(max_signal_freq - 100)), int(round(max_signal_freq + 100))]
 
