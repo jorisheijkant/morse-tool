@@ -8,8 +8,9 @@ from scipy.signal import butter, lfilter, sosfilt
 from utils.frequency_analysis import frequency_analysis
 from utils.morse_from_sound_profile import morse_from_sound_profile
 from utils.decode_morse import decode_morse
+from utils.weather_report_decoder import decode_report
 
-audio_file = 'files/test/cleaned-morse.wav'
+audio_file = 'files/test/test.wav'
 file_no_ext_with_folder = audio_file.split('.')[0]
 file_no_ext = file_no_ext_with_folder.split('/')[-1]
 print(f"Now analyzing {file_no_ext}...")
@@ -190,6 +191,11 @@ print(f"Now decoding morse...")
 print(f"Morse array: {morse_array}")
 text = decode_morse(morse_array)
 analysis['text'] = text
+report = decode_report(text)
+analysis['full_report'] = report
+analysis['station'] = report['station']
+analysis['callsign'] = report['callsign']
+analysis['position'] = report['position']
 
 # Write the analysis to a file
 with open(f"{file_no_ext_with_folder}.txt", 'w') as f:

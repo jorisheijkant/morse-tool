@@ -9,23 +9,81 @@ stations = {
     # There are more but we'll decode the rest as 'other'
 }
 
+def get_station(morse_string):
+    # Check the first part of the string, focusing on character 4 to 40
+    # The station should be repeated here a few times, probably starting at the 4th character
+    string_start = morse_string[4:40]
+    station_probably = string_start[0:2]
+    if station_probably in stations:
+        return stations[station_probably]
+    else:
+        # Check the full string start if somewhere it includes a station
+        for station_code in stations:
+            if station_code in string_start:
+                return stations[station_code]
+
 # The callsign of the ship can be seen right after the DE part
 # TODO: Implement a callsign dictionary here (preferably with an external file)
 callsigns = {
 
 }
 
+def get_callsign(morse_string):
+    # The callsign should appear after the DE part
+    if 'DE' in morse_string:
+        split_string = morse_string.split('DE')[1]
+        # Get the first four characters
+        callsign = split_string[:4]
+        return callsign
+    else: 
+        return "Unknown"
+
 # After the 99, we have the latitude and longitide
 # In the format 99LLL, where the LLL is the latitude in two numbers and one decimal
 # And after that QXLLL, Where Q is the globe quadrant and LLL the longitude in two numbers and once decimal
 def parse_position(position_string):
-    #TODO: Build some more conditions here to prevent crashing and key errors
-    latitude_string = position_string.split(' ')[0]
-    longitude_string = position_string.split(' ')[1]
-    latitude = float(latitude_string[3] + ',' + latitude_string[:2])
-    longitude = float(longitude_string[3] + ',' + longitude_string[:2])
+    if(len(position_string) != 10):
+        return "Position unknown"
+    # Get the first five characters, which are the latitude
+    latitude_string = position_string[:5]
+    # Get the last five characters, which are the longitude
+    longitude_string = position_string[5:]
+    print(f"Latitude string: {latitude_string}, longitude string: {longitude_string}")
+    # Get characters 3 and 4, a dot and character 5, to get the latitude
+    latitude = float(latitude_string[2:4] + '.' + latitude_string[4])
+    # Get the first character, which is the globe quadrant
+    globe_quadrant = longitude_string[0]
+    # Get characters 3 and 4, a dot and character 5, to get the longitude
+    longitude = float(longitude_string[2:4] + '.' + longitude_string[4])
 
     return [latitude, longitude]
+
+def get_position(morse_string):
+    # Find the part of the string that starts with 99 
+    # If there is no 99 in the morse_string find a part that has 10 surrounded by three numbers on both sides
+    # The part we need is the 10 numbers starting with 99, or the 5 numbers before 10, 10 and the three numbers after 10
+    position_string = ""
+    has_99 = '99' in morse_string
+    has_10 = '10' in morse_string
+    if(has_99):
+        # The 99 is the start of the position string, which totals 10 characters
+        position_string = morse_string[morse_string.index('99'):morse_string.index('99') + 10]
+    elif(has_10):
+        # Find all instances of 10 in the string
+        tens = [i for i in range(len(morse_string)) if morse_string.startswith('10', i)]
+        for ten in tens:
+            # Check if the three characters before and after are numbers
+            if morse_string[ten - 3:ten].isnumeric() and morse_string[ten + 2:ten + 5].isnumeric():
+                # If so, check if one of the five characters before the ten is a 9
+                if "9" in morse_string[ten - 5:ten]:
+                    # If so, we found the position string
+                    position_string = morse_string[ten - 5:ten + 5]
+                    break
+    print(f"Position string: {position_string}")
+    # Parse the position string
+    position = parse_position(position_string)
+    return position
+
 
 # The speed and direction of the ship is shown after the 222 part in the code
 # In the format of 222CS, where C is the coarse and S is the speed
@@ -54,6 +112,24 @@ speed_dictionary = {
     "8": "36 to 40 knots",
     "9": "Not reported / Over 40 knots"
 }
+
+
+def decode_report(morse):
+    morse_string = morse.replace(' ', '')
+    print(f"Concatenated morse string: {morse_string}")
+    station = get_station(morse_string)
+    callsign = get_callsign(morse_string)
+    position = get_position(morse_string)
+
+    return {
+        "station": station,
+        "callsign": callsign,
+        "position": position
+    }
+
+# Check with dummy string
+test_string = "VVV RMP RMP RMP D E RMIK RMIK Q S A ? Q TC K RMI K 5 6 0 1 6 10 1 5 0 2 5 6 0 = S ML F O R R C D 8 8 RI O 8 0 = 1 0 1 2 1 E 9 5 5 0 1019 6 4 2 4 9 8 00 7 04 100 T 9 40241 5 7 006 8 0 5 00 2 2 2 6 1 0005 8 20 3 01 10012 = A R RMI A K RMI K O K QR U K"
+print(decode_report(test_string))
 
 # Q codes that are used in weather reports
 ###
