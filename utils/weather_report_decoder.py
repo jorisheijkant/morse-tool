@@ -6,6 +6,9 @@ stations = {
     "RCV": "Sevastopol (Black Sea Fleet)",
     "RJS": "Vladivostok (Pacific Fleet)",
     "RKN": "Astrakhan (Caspian Flotilla)",
+    "RIT": "Severomorsk",
+    "RIW": "Moscow",
+    "RAA": "St. Petersburg",
     # There are more but we'll decode the rest as 'other'
 }
 

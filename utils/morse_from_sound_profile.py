@@ -1,6 +1,6 @@
 import numpy as np
 
-def morse_from_sound_profile(sounds, silences):
+def morse_from_sound_profile(sounds, silences, correct_human_timing_errors=False):
     print(f"Reconstructing morse profile from {len(sounds)} sounds and {len(silences)} silences")
     morse_array = []
     average_sound_length = np.mean([sound['length'] for sound in sounds])
@@ -33,6 +33,9 @@ def morse_from_sound_profile(sounds, silences):
     print(f"Short sound length: {short_sound_length}")
     print(f"Long sound length: {long_sound_length}") 
 
+    # Set the sound lengths
+    # N.B. These are adaptive, as in that they will be recalculated after each sound
+    # In this way, human timing errors should mostly be corrected for
     short_sound_minimum = round(short_sound_length / 1.5, 2)
     short_sound_maximum = round((short_sound_length + long_sound_length) / 2, 2)
     long_sound_minimum = round((long_sound_length / 1.5), 2)
@@ -45,8 +48,12 @@ def morse_from_sound_profile(sounds, silences):
         if(item['type'] == 'sound'):
             if(item['length'] > short_sound_minimum and item['length'] < short_sound_maximum):
                 morse_array.append(".")
-            elif sound['length'] > long_sound_minimum and sound['length'] < long_sound_maximum:
+                if(correct_human_timing_errors):
+                    short_sound_length = round((5 * short_sound_length + item['length']) / 6, 2)
+            elif item['length'] > long_sound_minimum and item['length'] < long_sound_maximum:
                 morse_array.append("_")
+                if(correct_human_timing_errors):
+                    long_sound_length = round((5 * long_sound_length + item['length']) / 6, 2)
         elif(item['type'] == 'silence'):
             if(item['length'] < short_sound_maximum):
                 morse_array.append("")
@@ -54,6 +61,13 @@ def morse_from_sound_profile(sounds, silences):
                 morse_array.append(" ")
             elif(item['length'] > word_break_minimum):
                 morse_array.append(" / ")
+
+        # Recalculate the sound lengths
+        short_sound_minimum = round(short_sound_length / 1.5, 2)
+        short_sound_maximum = round((short_sound_length + long_sound_length) / 2, 2)
+        long_sound_minimum = round((long_sound_length / 1.5), 2)
+        long_sound_maximum = round(long_sound_length * 1.5, 2)
+        word_break_minimum = round(long_sound_length * 1.5, 2)
 
     # Convert the array into a string
     morse_string = "".join(morse_array)

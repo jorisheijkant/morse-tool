@@ -39,9 +39,15 @@ seconds = int(round(seconds % 60))
 analysis['length (m:s)'] = f"{minutes}:{seconds}"
 
 print(f"Doing frequency analysis wth sampling freq {sampling_freq} and signal length {len_signal}...")
-frequency_information = frequency_analysis(signal, sampling_freq, file_no_ext_with_folder, False)
+frequency_information = frequency_analysis(signal, sampling_freq, file_no_ext_with_folder, True, True)
 print(frequency_information)
 range_to_use = frequency_information['freq_range']
+
+# Write out the 
+if(len(frequency_information['denoised_signal']) > 0):
+    print(f"Has denoised signal, writing to file...")
+    denoised_signal = frequency_information['denoised_signal']
+    wavfile.write(f"{file_no_ext_with_folder}-denoised.wav", sampling_freq, denoised_signal.astype(np.int16))
 
 # Cut out only the part of the signal that is in the frequency range, using a scipy butterworth filter (bandpass)
 nyquist_freq = 0.5 * sampling_freq
@@ -191,6 +197,7 @@ min_db = min(db_values)
 max_db = max(db_values)
 analysis['min_db'] = f"{min_db} db"
 analysis['max_db'] = f"{max_db} db"
+analysis['frequency'] = f"{frequency_information['max_signal_freq']} Hz"
 
 morse_array = morse_from_sound_profile(sounds, silences)
 analysis['morse_array'] = morse_array

@@ -3,8 +3,8 @@ from pydub import AudioSegment
 from pydub.effects import normalize, compress_dynamic_range
 
 # Load the file
-files_folder = 'files/test/alphabet/'
-file_name = 'alphabet.wav'
+files_folder = 'files/test/fast/'
+file_name = 'fast.wav'
 file_path = files_folder + file_name
 
 sound = False
