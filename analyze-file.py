@@ -10,7 +10,7 @@ from utils.morse_from_sound_profile import morse_from_sound_profile
 from utils.decode_morse import decode_morse
 from utils.weather_report_decoder import decode_report
 
-audio_file = 'files/test/test-2/test-2.wav'
+audio_file = 'files/test/alphabet/alphabet.wav'
 file_no_ext_with_folder = audio_file.split('.')[0]
 file_no_ext = file_no_ext_with_folder.split('/')[-1]
 print(f"Now analyzing {file_no_ext}...")

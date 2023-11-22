@@ -35,11 +35,11 @@ def morse_from_sound_profile(sounds, silences):
 
     short_sound_minimum = round(short_sound_length / 1.5, 2)
     short_sound_maximum = round((short_sound_length + long_sound_length) / 2, 2)
-    long_sound_minimum = round((long_sound_length + long_sound_length) / 2, 2)
+    long_sound_minimum = round((long_sound_length / 1.5), 2)
     long_sound_maximum = round(long_sound_length * 1.5, 2)
     word_break_minimum = round(long_sound_length * 1.5, 2)
 
-    print(f"Short sound minimum: {short_sound_minimum}, short sound maximum {short_sound_maximum}, short sound maximum: {short_sound_maximum}. Long sound length: {long_sound_length}, long sound minimum: {long_sound_minimum}, long sound maximum: {long_sound_maximum}. Word break minimum: {word_break_minimum}")
+    print(f"Short sound minimum: {short_sound_minimum}, short sound maximum {short_sound_maximum}. Long sound length: {long_sound_length}, long sound minimum: {long_sound_minimum}, long sound maximum: {long_sound_maximum}. Word break minimum: {word_break_minimum}")
 
     for item in sounds_and_silences:
         if(item['type'] == 'sound'):

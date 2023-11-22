@@ -4,8 +4,8 @@
 stations = {
     "RMP": "Kaliningrad (Baltic Sea Fleet)",
     "RCV": "Sevastopol (Black Sea Fleet)",
+    "RJS": "Vladivostok (Pacific Fleet)",
     "RKN": "Astrakhan (Caspian Flotilla)",
-    "RJS": "Vladivostok (Pacific Fleet)"
     # There are more but we'll decode the rest as 'other'
 }
 
